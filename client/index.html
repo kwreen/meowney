@@ -12,22 +12,22 @@
     <title>Meowney</title>
 </head>
 
-<body
-    onload="chat('Hello! I\'m Meowney! I\'m here to help you manage your money. Let\'s start by entering your account ID below.')">
+<body onload="chat(greet)">
     <div id="chatBox">
         <div id="chatBoxText">
         </div>
     </div>
     <div id="kitty"></div>
     <div id="userInputs">
-        <input type="text" id="userIdInput" placeholder="Enter your user ID"></input>
+        <input type="text" id="userIdInput" placeholder="Enter your TD customer ID"></input>
         <button id="formSubmitButton" hidden="hidden" onClick="userIdSubmit()"></button>
     </div>
-    <p class="loading">ddd</p>
     <script src="js/kitty.js"></script>
     <script src="js/key.js"></script>
     <script>
+        //Initial greeting message
 
+        const greet = "Hello! I\'m Meowney from TD! I\'m here to help you better manage your money. Let\'s start by entering your customer ID below.";
         //TD API
         var myInit = {
             method: 'GET',
@@ -38,6 +38,9 @@
 
         //Current user
         var custID;
+
+        //Personal data for current user
+        var custIDData;
 
         //Used for text animation
         function chat(chatText) {
@@ -77,6 +80,7 @@
                         userIdInput.value = "";
                     }
                     console.log(json);
+                    custIDData = json;
                 });
 
             /**
@@ -106,25 +110,81 @@
 
         //Shows user data on sucessful login
         function showData() {
-            //Transition to bigger chatbox
+            //Transition to bigger chatbox and smaller kitty
             document.getElementById("chatBox").style.transition = "height 2s";
+            document.getElementById("kitty").style.transition = "height 2s";
+
             document.getElementById("chatBox").style.height = "80vh";
+            document.getElementById("kitty").style.height = "15vh";
+
             //Fade out Hello
             setTimeout(function () {
                 document.getElementById("chatBoxText").style.transition = "opacity 1s";
                 document.getElementById("chatBoxText").style.opacity = "0";
 
-
-
                 //Fade in summary
                 setTimeout(function () {
                     //Set summary text
-                    document.getElementById("chatBoxText").textContent = "Fetching data..."
+                    document.getElementById("chatBoxText").textContent = "Fetching data...";
                     //Fade in Summary
                     document.getElementById("chatBoxText").style.transition = "opacity 2s";
                     document.getElementById("chatBoxText").style.opacity = "100";
+                    //Summary text
+
+                    //Keeps track of the data sent from calculation server
+                    var CalcServer;
+
+                    //Sends request to calculation server
+                    const Http = new XMLHttpRequest();
+                    const url = 'https://jsonplaceholder.typicode.com/posts/1';
+                    Http.open("GET", url);
+                    Http.send();
+
+                    Http.onreadystatechange = (e) => {
+                        if (Http.readyState == 4) { //Only run the code below when it is ready (State 4)
+                            if (Http.status == "404") {
+                                chat("There was an error fetching data from the server");
+                                userIdInput.setAttribute("type", "text");
+                                userIdInput.value = "";
+                            } else {
+                                var CalcServer = JSON.parse(Http.responseText);
+                            }
+                        }
+                    }
+
+                    //Display data from calculaion server
+
+
+
+
+
+
+
+
+
                 }, 1000);
             }, 1000);
+        }
+
+        //Logout/Reset Scene
+        function resetScene() {
+            //Reset chatbox and kitty size
+            document.getElementById("chatBox").style.transition = "height 2s";
+            document.getElementById("kitty").style.transition = "height 2s";
+
+            document.getElementById("chatBox").style.height = "20vh";
+            document.getElementById("kitty").style.height = "65vh";
+
+            //Reset greeting
+            document.getElementById("chatBoxText").textContent = greet;
+
+            //Input box enable
+            userIdInput.setAttribute("type", "text");
+            userIdInput.value = "";
+
+            //Reset variables
+            custID = "";
+            custIDData = "";
         }
     </script>
 </body>
