@@ -39,6 +39,7 @@ header h1 {
 }
 
 #chatBoxText {
+    margin: 5px;
     text-align: center;
     position: relative;
 	top: 50%;
@@ -105,12 +106,13 @@ input {
 }
 
 #charts{
-    margin: 15px;
+    margin: 50px;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 }
 
 #chartLegend{
     text-align: center;
-    font-size: 0.5em;
+    font-size: 0.7em;
 }
