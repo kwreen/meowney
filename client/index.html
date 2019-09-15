@@ -6,13 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="css/style.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Manjari:700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Manjari:400,700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.8/lottie.js"
         integrity="sha256-k59gT9rDlIKrC5fReu+20AI0btQpJWXzJopV698Icfg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"
+        integrity="sha256-arMsf+3JJK2LoTGqxfnuJPFTU4hAK57MtIPdFpiHXOU=" crossorigin="anonymous"></script>
     <title>Meowney</title>
 </head>
 
 <body onload="chat(greet)">
+    <div id="logoutDiv">
+        <!--<button id="logout" onClick="resetScene()">Logout</button>-->
+    </div>
+
     <div id="chatBox">
         <div id="chatBoxText">
         </div>
@@ -22,8 +28,17 @@
         <input type="text" id="userIdInput" placeholder="Enter your TD customer ID"></input>
         <button id="formSubmitButton" hidden="hidden" onClick="userIdSubmit()"></button>
     </div>
+
+
+
+
+
+
+
+
     <script src="js/kitty.js"></script>
     <script src="js/key.js"></script>
+
     <script>
         //Initial greeting message
 
@@ -82,40 +97,19 @@
                     console.log(json);
                     custIDData = json;
                 });
-
-            /**
-            const Http = new XMLHttpRequest();
-            const url = 'https://jsonplaceholder.typicode.com/posts/' + userIdInput.value;
-            Http.open("GET", url);
-            Http.send();
-
-            //Disables userinput
-            userIdInput.setAttribute("type", "hidden");
-
-            Http.onreadystatechange = (e) => {
-                if (Http.readyState == 4) { //Only run the code below when it is ready (State 4)
-                    if (Http.status == "404") {
-                        chat("I can't find your account. Please try again.");
-                        userIdInput.setAttribute("type", "text");
-                        userIdInput.value = "";
-                    } else {
-                        var data = JSON.parse(Http.responseText);
-                        chat("Hello " + data.title);
-                        console.log("2")
-                    }
-                }
-            }
-            **/
         }
 
+        //Callback hell
         //Shows user data on sucessful login
         function showData() {
             //Transition to bigger chatbox and smaller kitty
             document.getElementById("chatBox").style.transition = "height 2s";
             document.getElementById("kitty").style.transition = "height 2s";
 
-            document.getElementById("chatBox").style.height = "80vh";
+            document.getElementById("chatBox").style.height = "75vh";
             document.getElementById("kitty").style.height = "15vh";
+
+            document.getElementById("logoutDiv").innerHTML = "<button id='logout' onClick='resetScene()''>Logout</button>"
 
             //Fade out Hello
             setTimeout(function () {
@@ -134,9 +128,12 @@
                     //Keeps track of the data sent from calculation server
                     var CalcServer;
 
+                    //Keeps track of transaction list
+                    var transactions;
+
                     //Sends request to calculation server
                     const Http = new XMLHttpRequest();
-                    const url = 'https://jsonplaceholder.typicode.com/posts/1';
+                    const url = 'http://localhost:5000/average/entertainment'; //Must be in http, not https
                     Http.open("GET", url);
                     Http.send();
 
@@ -147,21 +144,208 @@
                                 userIdInput.setAttribute("type", "text");
                                 userIdInput.value = "";
                             } else {
-                                var CalcServer = JSON.parse(Http.responseText);
+                                CalcServer = JSON.parse(Http.responseText);
+
+                                //Send request to query all user transactions
+
+                                var getTrans = new Request('https://api.td-davinci.com/api/customers/' + userIdInput.value + '/transactions', myInit);
+
+                                fetch(getTrans)
+                                    .then(response => response.json())
+                                    .then(json => {
+                                        if (json.statusCode == 200) {
+                                            transactions = json.result;
+
+
+                                            //console.log("cal server: " + CalcServer[1]);
+                                            //console.log("trans: " + transactions);
+
+                                            //Calculate averages
+
+                                            //From transaction list
+                                            var sumMoneyShopping = 0;
+                                            var sumMoneyFood = 0;
+                                            var sumMoneyEnt = 0;
+                                            var sumCountShopping = 0;
+                                            var sumCountFood = 0;
+                                            var sumCountEnt = 0;
+
+                                            for (var i = 0; i < transactions.length; i++) {
+                                                var tags = transactions[i].categoryTags;
+                                                for (var j = 0; j < tags.length; j++) {
+                                                    if (tags[j] == "Food and Dining") {
+                                                        sumMoneyFood += transactions[i].currencyAmount;
+                                                        sumCountFood++;
+                                                    } else if (tags[j] == "Entertainment") {
+                                                        sumMoneyEnt += transactions[i].currencyAmount;
+                                                        sumCountEnt++;
+                                                    } else if (tags[j] == "Shopping") {
+                                                        sumMoneyShopping += transactions[i].currencyAmount;
+                                                        sumCountShopping++;
+                                                    }
+                                                }
+                                            }
+
+                                            var custAvgShopping;
+                                            var custAvgFood;
+                                            var custAvgEnt;
+
+                                            if (sumCountShopping == 0) {
+                                                custAvgShopping = 0;
+                                            } else {
+                                                custAvgShopping = sumMoneyShopping / sumCountShopping;
+                                            }
+                                            if (sumCountFood == 0) {
+                                                custAvgFood = 0;
+                                            } else {
+                                                custAvgFood = sumMoneyFood / sumCountFood;
+                                            }
+                                            if (sumCountEnt == 0) {
+                                                custAvgEnt = 0;
+                                            } else {
+                                                custAvgEnt = sumMoneyEnt / sumCountEnt;
+                                            }
+
+                                            //Summing other average
+
+                                            var totalCalc = 0;
+                                            var avgCalc;
+
+                                            for (var i = 1; i <= 12; i++) {
+                                                console.log("Month " + i + ": " + CalcServer[i]);
+                                                totalCalc += CalcServer[i];
+                                            }
+
+                                            if (totalCalc == 0) {
+                                                avgCalc = 0;
+                                            } else {
+                                                avgCalc = totalCalc / 12;
+                                            }
+
+
+                                            //Display data
+                                            //General data for graphs
+
+                                            //Format CSS
+                                            document.getElementById("chatBoxText").style.textAlign = "left";
+                                            document.getElementById("chatBoxText").style.top = null;
+                                            document.getElementById("chatBoxText").style.left = null;
+                                            document.getElementById("chatBoxText").style.transform = null;
+                                            document.getElementById("chatBox").style.fontSize = "1.5em";
+
+                                            document.getElementById("chatBoxText").innerHTML =
+                                                "Here's a summary of your spending compared to people with the same age, income, and location as you: <br/>" +
+                                                "<div id='charts'>" +
+                                                "<div id='chartLegend'>Shopping<canvas id='myChart' width='200' height='200'></canvas></div>" +
+                                                "<div id='chartLegend'>Entertainment<canvas id='myChart1' width='200' height='200'></canvas></div>" +
+                                                "<div id='chartLegend'>Food and Dining<canvas id='myChart2' width='200' height='200'></canvas></div>" +
+                                                "</div>" +
+
+                                                /**
+                                                "<span id='chatBoxData>'" +
+                                                "<h1>Shopping:</h1>" +
+                                                "<h2>You: $" + custAvgShopping.toFixed(2) + "</h2>" +
+                                                "<h3>Them: $" + avgCalc.toFixed(2) + "</h2>" +
+                                                "<h1>Entertainment:</h1>" +
+                                                "<h2>You: $" + custAvgEnt.toFixed(2) + "</h2>" +
+                                                "<h3>Them: $" + avgCalc.toFixed(2) + "</h2>" +
+                                                "<h1>Food & Dining:</h1>" +
+                                                "<h2>You: $" + custAvgFood.toFixed(2) + "</h2>" +
+                                                "<h3>Them: $" + avgCalc.toFixed(2) + "</h2> <br/>" +
+                                                "</span>" +
+                                                **/
+
+
+                                                "stop spending so much money on boba uwu";
+
+
+                                            var data = [custAvgEnt, avgCalc];
+                                            var data1 = [custAvgFood, avgCalc];
+                                            var data2 = [custAvgShopping, avgCalc];
+                                            var optionsAll = {
+                                                legend: {
+                                                    display: false
+                                                },
+                                                responsive: false,
+                                                scales: {
+                                                    yAxes: [{
+                                                        ticks: {
+                                                            beginAtZero: true
+                                                        }
+                                                    }]
+                                                }
+                                            };
+                                            var backgroundColorAll = [
+                                                'rgba(60, 146, 182, 0.2)',
+                                                'rgba(144, 90, 255, 0.2)',
+                                            ];
+                                            var borderColorAll = [
+                                                'rgba(17, 134, 182, 1)',
+                                                'rgba(106, 33, 255, 1)',
+                                            ];
+
+                                            var ctx = document.getElementById('myChart');
+                                            var myChart = new Chart(ctx, {
+                                                type: 'bar',
+                                                data: {
+                                                    labels: ['You', 'Them'],
+                                                    datasets: [{
+                                                        label: '$',
+                                                        data: data,
+                                                        backgroundColor: backgroundColorAll,
+                                                        borderColor: backgroundColorAll,
+                                                        borderWidth: 1
+                                                    }]
+                                                },
+                                                options: optionsAll
+                                            });
+
+
+
+
+                                            var ctx1 = document.getElementById('myChart1');
+                                            var myChart1 = new Chart(ctx1, {
+                                                type: 'bar',
+                                                data: {
+                                                    labels: ['You', 'Them'],
+                                                    datasets: [{
+                                                        label: '$',
+                                                        data: data1,
+                                                        backgroundColor: backgroundColorAll,
+                                                        borderColor: backgroundColorAll,
+                                                        borderWidth: 1
+                                                    }]
+                                                },
+                                                options: optionsAll
+                                            });
+
+                                            var ctx2 = document.getElementById('myChart2');
+                                            var myChart2 = new Chart(ctx2, {
+                                                type: 'bar',
+                                                data: {
+                                                    labels: ['You', 'Them'],
+                                                    datasets: [{
+                                                        label: '',
+                                                        data: data2,
+                                                        backgroundColor: backgroundColorAll,
+                                                        borderColor: backgroundColorAll,
+                                                        borderWidth: 1
+                                                    }]
+                                                },
+                                                options: optionsAll
+                                            });
+
+
+                                        } else {
+                                            chat("There was an error fetching your transaction data. Please try again. Status code: " + json.statusCode);
+                                            userIdInput.setAttribute("type", "text");
+                                            userIdInput.value = "";
+                                        }
+                                    });
+
                             }
                         }
                     }
-
-                    //Display data from calculaion server
-
-
-
-
-
-
-
-
-
                 }, 1000);
             }, 1000);
         }
@@ -174,6 +358,16 @@
 
             document.getElementById("chatBox").style.height = "20vh";
             document.getElementById("kitty").style.height = "65vh";
+
+            //Reset chatBoxText
+            document.getElementById("chatBoxText").style.textAlign = "center";
+            document.getElementById("chatBoxText").style.position = "relative";
+            document.getElementById("chatBoxText").style.top = "50%";
+            document.getElementById("chatBoxText").style.left = "50%";
+            document.getElementById("chatBoxText").style.transform = "translate(-50%, -50%)";
+
+            //Remove logout
+            document.getElementById("logoutDiv").innerHTML = null;
 
             //Reset greeting
             document.getElementById("chatBoxText").textContent = greet;
