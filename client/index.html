@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Manjari:700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.8/lottie.js"
+        integrity="sha256-k59gT9rDlIKrC5fReu+20AI0btQpJWXzJopV698Icfg=" crossorigin="anonymous"></script>
+    <title>Meowney</title>
+</head>
+
+<body
+    onload="chat('Hello! I\'m Meowney! I\'m here to help you manage your money. Let\'s start by entering your account ID below.')">
+    <div id="chatBox">
+        <div id="chatBoxText">
+        </div>
+    </div>
+    <div id="kitty"></div>
+    <div id="userInputs">
+        <input type="text" id="userIdInput" placeholder="Enter your user ID"></input>
+        <button id="formSubmitButton" hidden="hidden" onClick="userIdSubmit()"></button>
+    </div>
+    <p class="loading">ddd</p>
+    <script src="js/kitty.js"></script>
+    <script src="js/key.js"></script>
+    <script>
+
+        //TD API
+        var myInit = {
+            method: 'GET',
+            headers: {
+                'Authorization': key
+            }
+        };
+
+        //Current user
+        var custID;
+
+        //Used for text animation
+        function chat(chatText) {
+            document.getElementById("chatBoxText").textContent = chatText;
+        }
+
+        var userIdInput = document.getElementById("userIdInput");
+
+        //Bind Enter key to form
+        userIdInput.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("formSubmitButton").click();
+            }
+        });
+
+        //Returning function for user ID
+        function userIdSubmit() {
+            chat("Fetching data...");
+
+            var myRequest = new Request('https://api.td-davinci.com/api/customers/' + userIdInput.value, myInit);
+
+            //Disables userinput
+            userIdInput.setAttribute("type", "hidden");
+
+            fetch(myRequest)
+                .then(response => response.json())
+                .then(json => {
+                    if (json.statusCode == 200) {
+                        chat("Hello " + json.result.givenName + "!");
+                        custID = userIdInput.value;
+                        setTimeout(function () { showData(); }, 1000);
+
+                    } else {
+                        chat("There was an error fetching your data. Please try again. Status code: " + json.statusCode);
+                        userIdInput.setAttribute("type", "text");
+                        userIdInput.value = "";
+                    }
+                    console.log(json);
+                });
+
+            /**
+            const Http = new XMLHttpRequest();
+            const url = 'https://jsonplaceholder.typicode.com/posts/' + userIdInput.value;
+            Http.open("GET", url);
+            Http.send();
+
+            //Disables userinput
+            userIdInput.setAttribute("type", "hidden");
+
+            Http.onreadystatechange = (e) => {
+                if (Http.readyState == 4) { //Only run the code below when it is ready (State 4)
+                    if (Http.status == "404") {
+                        chat("I can't find your account. Please try again.");
+                        userIdInput.setAttribute("type", "text");
+                        userIdInput.value = "";
+                    } else {
+                        var data = JSON.parse(Http.responseText);
+                        chat("Hello " + data.title);
+                        console.log("2")
+                    }
+                }
+            }
+            **/
+        }
+
+        //Shows user data on sucessful login
+        function showData() {
+            //Transition to bigger chatbox
+            document.getElementById("chatBox").style.transition = "height 2s";
+            document.getElementById("chatBox").style.height = "80vh";
+            //Fade out Hello
+            setTimeout(function () {
+                document.getElementById("chatBoxText").style.transition = "opacity 1s";
+                document.getElementById("chatBoxText").style.opacity = "0";
+
+
+
+                //Fade in summary
+                setTimeout(function () {
+                    //Set summary text
+                    document.getElementById("chatBoxText").textContent = "Fetching data..."
+                    //Fade in Summary
+                    document.getElementById("chatBoxText").style.transition = "opacity 2s";
+                    document.getElementById("chatBoxText").style.opacity = "100";
+                }, 1000);
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>
