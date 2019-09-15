@@ -1,0 +1,1 @@
+FLASK_ENV=server.py

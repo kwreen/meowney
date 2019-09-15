@@ -1,4 +1,13 @@
+# Sensitive information
+constants.py
 client/js/key.js
+
+# Database
+customers.json
+pastTransactions.json
+
+.DS_Store
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
