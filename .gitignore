@@ -1,3 +1,13 @@
+# Sensitive information
+constants.py
+
+# Database
+customers.json
+pastTransactions.json
+
+.DS_Store
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
