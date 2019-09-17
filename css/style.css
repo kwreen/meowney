@@ -45,7 +45,6 @@ header h1 {
 	top: 50%;
 	left: 50%;
     transform: translate(-50%, -50%); /*Offet*/
-    overflow-y: scroll;
 }
 
 #chatBoxText h1, h2, h3 {
@@ -65,6 +64,9 @@ input {
 
 #userInputs {
     text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 #logout {
@@ -74,6 +76,25 @@ input {
     margin: 0;
     text-decoration: none;
     background: #ff4138;
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background 250ms ease-in-out, 
+                transform 150ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 3px;
+}
+
+#formSubmitButton {
+    display: inline-block;
+    border: none;
+    margin: 5px;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    background: #7ccbff;
     color: #ffffff;
     font-family: sans-serif;
     font-size: 1rem;
@@ -132,6 +153,7 @@ input {
         left: auto;
         transform: none;
         height: 75vh;
+        overflow-y: scroll;
     }
 
     #chartLegend{
@@ -150,6 +172,7 @@ input {
         left: auto;
         transform: none;
         height: 75vh;
+        overflow-y: scroll;
     }
 
     #logout {
@@ -176,6 +199,7 @@ input {
         left: auto;
         transform: none;
         height: 75vh;
+        overflow-y: scroll;
     }
 
     #logout {

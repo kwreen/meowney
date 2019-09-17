@@ -26,7 +26,7 @@
     <div id="kitty"></div>
     <div id="userInputs">
         <input type="text" id="userIdInput" placeholder="Enter your name" maxlength="50"></input>
-        <button id="formSubmitButton" hidden="hidden" onClick="userIdSubmit()"></button>
+        <button id="formSubmitButton" type="button" onClick="userIdSubmit()">Submit</button>
     </div>
 
     <script src="js/kitty.js"></script>
@@ -60,6 +60,7 @@
         function userIdSubmit() {
             //Disables userinput
             userIdInput.setAttribute("type", "hidden");
+            document.getElementById("formSubmitButton").style.display = "none";
             custId = userIdInput.value.substring(0, 50);
             custHash = generateHash(custId);
             chat("Hello " + custId + "!");   
@@ -96,6 +97,11 @@
                     document.getElementById("chatBoxText").style.left = null;
                     document.getElementById("chatBoxText").style.transform = null;
                     document.getElementById("chatBox").style.fontSize = "1.5em";
+
+                    //Enable overflow on certain screen size
+                    if(screen.width <= 1000){
+                        document.getElementById("chatBoxText").style.overflowY = "scroll";
+                    }
 
                     //Customer personal data
                     var cities = ["Kerning City", "Lith Harbor", "Henesys", "Ellinia", "Perion", "Sleepywood", "Nautilus Port", "Orbis", "El Nath", "Ludibrium"];
@@ -209,6 +215,7 @@
             document.getElementById("chatBoxText").style.top = "50%";
             document.getElementById("chatBoxText").style.left = "50%";
             document.getElementById("chatBoxText").style.transform = "translate(-50%, -50%)";
+            document.getElementById("chatBoxText").style.height= "inherit";
 
             //Remove logout
             document.getElementById("logoutDiv").innerHTML = null;
@@ -219,6 +226,12 @@
             //Input box enable
             userIdInput.setAttribute("type", "text");
             userIdInput.value = "";
+
+            //Submit enable
+            document.getElementById("formSubmitButton").style.display = null;
+
+            //Disable overflow
+            document.getElementById("chatBoxText").style.overflowY = null;
 
             //Reset variables
             custID = "";
