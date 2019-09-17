@@ -44,7 +44,8 @@ header h1 {
     position: relative;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%); /*Offet*/
+    transform: translate(-50%, -50%); /*Offet*/
+    overflow-y: scroll;
 }
 
 #chatBoxText h1, h2, h3 {
@@ -116,35 +117,77 @@ input {
 #chartLegend{
     text-align: center;
     font-size: 0.7em;
+    position: relative;
+    width: 30%;
 }
 
-canvas{
-    height: 300px;
-    width: 300px;
-}
-
-@media only screen and (max-width: 600px) {
-    #chatBox, #input {
-      font-size: 1em;
+@media only screen and (max-width: 1000px) {
+    #charts{
+        flex-direction: column;
     }
 
     #chatBoxText {
-        font-size: 0.6em;
+        font-size: 1em;
         top: auto;
         left: auto;
         transform: none;
+        height: 75vh;
+    }
+
+    #chartLegend{
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    #chatBox, input {
+      font-size: 3em;
+    }
+
+    #chatBoxText {
+        font-size: 1em;
+        top: auto;
+        left: auto;
+        transform: none;
+        height: 75vh;
     }
 
     #logout {
         font-size: 0.7em;
     }
 
-    canvas{
-        height: 100px;
-        width: 100px;
+    #charts{
+        flex-direction: column;
+    }
+
+    #chartLegend{
+        width: 100%;
+    }
+  }
+
+  @media only screen and (max-width: 533px) {
+    #chatBox, input {
+      font-size: 2.3em;
+    }
+
+    #chatBoxText {
+        font-size: 1em;
+        top: auto;
+        left: auto;
+        transform: none;
+        height: 75vh;
+    }
+
+    #logout {
+        font-size: 0.7em;
     }
 
     #charts{
         flex-direction: column;
     }
-  }
+
+    #chartLegend{
+        width: 100%;
+    }
+
+}
