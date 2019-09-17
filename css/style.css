@@ -35,7 +35,7 @@ header h1 {
     bottom: -20px;
     content: "";
     position: absolute;
-    right: 90%;
+    right: 80%;
 }
 
 #chatBoxText {
@@ -106,6 +106,7 @@ input {
 }
 
 #charts{
+    width: inherit;
     margin: 50px;
     display: flex;
     flex-direction: row;
@@ -116,3 +117,34 @@ input {
     text-align: center;
     font-size: 0.7em;
 }
+
+canvas{
+    height: 300px;
+    width: 300px;
+}
+
+@media only screen and (max-width: 600px) {
+    #chatBox, #input {
+      font-size: 1em;
+    }
+
+    #chatBoxText {
+        font-size: 0.6em;
+        top: auto;
+        left: auto;
+        transform: none;
+    }
+
+    #logout {
+        font-size: 0.7em;
+    }
+
+    canvas{
+        height: 100px;
+        width: 100px;
+    }
+
+    #charts{
+        flex-direction: column;
+    }
+  }

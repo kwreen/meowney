@@ -100,7 +100,7 @@
                     //Customer personal data
                     var cities = ["Kerning City", "Lith Harbor", "Henesys", "Ellinia", "Perion", "Sleepywood", "Nautilus Port", "Orbis", "El Nath", "Ludibrium"];
                     var checksum = generateChecksum(custHash);
-                    var firstDigit = parseInt(custHash.toString().charAt(1));
+                    var firstDigit = parseInt(custHash.toString().charAt(0));
                     var name = custId;
                     var age = firstDigit + 16 + checksum;
                     var loc = cities[checksum];
@@ -112,9 +112,9 @@
                     document.getElementById("chatBoxText").innerHTML =
                         name + ", here's a summary of your spending compared to people with the same age (" + age + "), income ($" + inc + "), and location (" + loc + ") as you: <br/>" +
                         "<div id='charts'>" +
-                        "<div id='chartLegend'>Entertainment<canvas id='myChart' width='300' height='300'></canvas></div>" +
-                        "<div id='chartLegend'>Food and Dining<canvas id='myChart1' width='300' height='300'></canvas></div>" +
-                        "<div id='chartLegend'>Shopping<canvas id='myChart2' width='300' height='300'></canvas></div>" +
+                        "<div id='chartLegend'>Entertainment<canvas id='myChart'></canvas></div>" +
+                        "<div id='chartLegend'>Food and Dining<canvas id='myChart1'></canvas></div>" +
+                        "<div id='chartLegend'>Shopping<canvas id='myChart2'></canvas></div>" +
                         "</div>" +
 
                         "I hope you'll find this information useful (uwu)<br/>";
@@ -125,7 +125,7 @@
                         legend: {
                             display: false
                         },
-                        responsive: false,
+                        responsive: true,
                         scales: {
                             yAxes: [{
                                 ticks: {
