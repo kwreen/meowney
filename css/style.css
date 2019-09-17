@@ -45,6 +45,7 @@ header h1 {
 	top: 50%;
 	left: 50%;
     transform: translate(-50%, -50%); /*Offet*/
+    height: 20vh;
 }
 
 #chatBoxText h1, h2, h3 {
@@ -152,8 +153,6 @@ input {
         top: auto;
         left: auto;
         transform: none;
-        height: 75vh;
-        overflow-y: scroll;
     }
 
     #chartLegend{
@@ -162,17 +161,15 @@ input {
 }
 
 @media only screen and (max-width: 750px) {
-    #chatBox, input {
-      font-size: 3em;
+    input {
+      font-size: 1em;
     }
 
     #chatBoxText {
-        font-size: 1em;
+        font-size: 0.7em;
         top: auto;
         left: auto;
         transform: none;
-        height: 75vh;
-        overflow-y: scroll;
     }
 
     #logout {
@@ -189,17 +186,15 @@ input {
   }
 
   @media only screen and (max-width: 533px) {
-    #chatBox, input {
-      font-size: 2.3em;
+    input {
+      font-size: 1em;
     }
 
     #chatBoxText {
-        font-size: 1em;
+        font-size: 0.5em;
         top: auto;
         left: auto;
         transform: none;
-        height: 75vh;
-        overflow-y: scroll;
     }
 
     #logout {
