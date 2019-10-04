@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Meowney has financial advice if you have coin.">
+    <link rel="image_src" href="assets/meowneyThumb.jpg">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Manjari:400,700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.8/lottie.js"
+        integrity="sha256-k59gT9rDlIKrC5fReu+20AI0btQpJWXzJopV698Icfg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"
+        integrity="sha256-arMsf+3JJK2LoTGqxfnuJPFTU4hAK57MtIPdFpiHXOU=" crossorigin="anonymous"></script>
+    <title>Meowney</title>
+</head>
+
+<body onload="chat(greet)">
+    <div id="logoutDiv">
+        <!--<button id="logout" onClick="resetScene()">Logout</button>-->
+    </div>
+
+    <div id="chatBox">
+        <div id="chatBoxText">
+        </div>
+    </div>
+    <div id="kitty"></div>
+    <div id="userInputs">
+        <input type="text" id="userIdInput" placeholder="Enter your name" maxlength="50"></input>
+        <button id="formSubmitButton" type="button" onClick="userIdSubmit()">Submit</button>
+    </div>
+
+    <script src="js/kitty.js"></script>
+
+    <script>
+        //tracking user name
+        var custId;
+
+        //Custom name hash for values
+        var custHash;
+
+        //Initial greeting message
+        const greet = "Hello! I\'m Meowney from TD! I\'m here to help you better manage your money. Let\'s start by entering your name below.";
+
+        //Used for text animation
+        function chat(chatText) {
+            document.getElementById("chatBoxText").textContent = chatText;
+        }
+
+        var userIdInput = document.getElementById("userIdInput");
+
+        //Bind Enter key to form
+        userIdInput.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("formSubmitButton").click();
+            }
+        });
+
+        //Returning function for user ID
+        function userIdSubmit() {
+            //Disables userinput
+            userIdInput.setAttribute("type", "hidden");
+            document.getElementById("formSubmitButton").style.display = "none";
+            custId = userIdInput.value.substring(0, 50);
+            custHash = generateHash(custId);
+            chat("Hello " + custId + "!");   
+            setTimeout(function () { showData(); }, 1000);
+        }
+
+        //Shows user data on sucessful login
+        function showData() {
+            //Transition to bigger chatbox and smaller kitty
+            document.getElementById("chatBox").style.transition = "height 2s";
+            document.getElementById("kitty").style.transition = "height 2s";
+
+            document.getElementById("chatBox").style.height = "75vh";
+            document.getElementById("kitty").style.height = "15vh";
+
+            document.getElementById("logoutDiv").innerHTML = "<button id='logout' onClick='resetScene()''>Logout</button>"
+
+            //Fade out Hello
+            setTimeout(function () {
+                document.getElementById("chatBoxText").style.transition = "opacity 1s";
+                document.getElementById("chatBoxText").style.opacity = "0";
+
+                //Fade in summary
+                setTimeout(function () {
+                    //Set summary text
+                    document.getElementById("chatBoxText").textContent = "Fetching data...";
+                    //Fade in Summary
+                    document.getElementById("chatBoxText").style.transition = "opacity 2s";
+                    document.getElementById("chatBoxText").style.opacity = "100";
+                    //Summary text
+                    //Format CSS
+                    document.getElementById("chatBoxText").style.textAlign = "left";
+                    document.getElementById("chatBoxText").style.top = null;
+                    document.getElementById("chatBoxText").style.left = null;
+                    document.getElementById("chatBoxText").style.transform = null;
+                    document.getElementById("chatBoxText").style.height = "75vh";
+                    document.getElementById("chatBox").style.fontSize = "1.5em";
+
+                    //Enable overflow on certain screen size
+                    if(screen.width <= 1000){
+                        document.getElementById("chatBoxText").style.overflowY = "scroll";
+                    }
+
+                    //Customer personal data
+                    var cities = ["Kerning City", "Lith Harbor", "Henesys", "Ellinia", "Perion", "Sleepywood", "Nautilus Port", "Orbis", "El Nath", "Ludibrium"];
+                    var checksum = generateChecksum(custHash);
+                    var firstDigit = parseInt(custHash.toString().charAt(0));
+                    var name = custId;
+                    var age = firstDigit + 16 + checksum;
+                    var loc = cities[checksum];
+                    var inc = firstDigit.toString() + checksum.toString() + "000";
+                    var data = [Math.floor((Math.random() * 1000) + 1), Math.floor((Math.random() * 1000) + 1)]; //Entertainment
+                    var data1 = [Math.floor((Math.random() * 1000) + 1), Math.floor((Math.random() * 1000) + 1)]; //Food Dining
+                    var data2 = [Math.floor((Math.random() * 1000) + 1), Math.floor((Math.random() * 1000) + 1)]; //Shopping
+
+                    document.getElementById("chatBoxText").innerHTML =
+                        name + ", here's a summary of your spending compared to people with the same age (" + age + "), income ($" + inc + "), and location (" + loc + ") as you: <br/>" +
+                        "<div id='charts'>" +
+                        "<div id='chartLegend'>Entertainment<canvas id='myChart'></canvas></div>" +
+                        "<div id='chartLegend'>Food and Dining<canvas id='myChart1'></canvas></div>" +
+                        "<div id='chartLegend'>Shopping<canvas id='myChart2'></canvas></div>" +
+                        "</div>" +
+
+                        "I hope you'll find this information useful (uwu)<br/>";
+
+
+                    
+                    var optionsAll = {
+                        legend: {
+                            display: false
+                        },
+                        responsive: true,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    };
+                    var backgroundColorAll = [
+                        'rgba(60, 146, 182, 0.5)',
+                        'rgba(144, 90, 255, 0.2)',
+                    ];
+                    var borderColorAll = [
+                        'rgba(17, 134, 182, 1)',
+                        'rgba(106, 33, 255, 1)',
+                    ];
+
+                    var ctx = document.getElementById('myChart');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['You', 'Them'],
+                            datasets: [{
+                                label: '$',
+                                data: data,
+                                backgroundColor: backgroundColorAll,
+                                borderColor: backgroundColorAll,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: optionsAll
+                    });
+
+                    var ctx1 = document.getElementById('myChart1');
+                    var myChart1 = new Chart(ctx1, {
+                        type: 'bar',
+                        data: {
+                            labels: ['You', 'Them'],
+                            datasets: [{
+                                label: '$',
+                                data: data1,
+                                backgroundColor: backgroundColorAll,
+                                borderColor: backgroundColorAll,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: optionsAll
+                    });
+
+                    var ctx2 = document.getElementById('myChart2');
+                    var myChart2 = new Chart(ctx2, {
+                        type: 'bar',
+                        data: {
+                            labels: ['You', 'Them'],
+                            datasets: [{
+                                label: '$',
+                                data: data2,
+                                backgroundColor: backgroundColorAll,
+                                borderColor: backgroundColorAll,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: optionsAll
+                    });
+                }, 1000);
+            }, 1000);
+        }
+
+        //Logout/Reset Scene
+        function resetScene() {
+            //Reset chatbox and kitty size
+            document.getElementById("chatBox").style.transition = "height 2s";
+            document.getElementById("kitty").style.transition = "height 2s";
+
+            document.getElementById("chatBox").style.height = "20vh";
+            document.getElementById("kitty").style.height = "65vh";
+
+            //Reset chatBoxText
+            document.getElementById("chatBoxText").style.textAlign = "center";
+            document.getElementById("chatBoxText").style.position = "relative";
+            document.getElementById("chatBoxText").style.top = "50%";
+            document.getElementById("chatBoxText").style.left = "50%";
+            document.getElementById("chatBoxText").style.transform = "translate(-50%, -50%)";
+            document.getElementById("chatBoxText").style.height= "inherit";
+
+            //Remove logout
+            document.getElementById("logoutDiv").innerHTML = null;
+
+            //Reset greeting
+            document.getElementById("chatBoxText").textContent = greet;
+
+            //Input box enable
+            userIdInput.setAttribute("type", "text");
+            userIdInput.value = "";
+
+            //Submit enable
+            document.getElementById("formSubmitButton").style.display = null;
+
+            //Disable overflow
+            document.getElementById("chatBoxText").style.overflowY = null;
+
+            //Reset variables
+            custID = "";
+            custIDData = "";
+        }
+
+        //Generates a value by summing all char codes from the user input
+        //Used so that vales generated by the same name stays somewhat consistant
+        function generateHash(name){
+            var hash = 0;
+            for(var i = 0; i < name.length; i++){
+                hash += name.charCodeAt(i);
+            }
+            console.log(hash);
+            return hash;
+        }
+
+        function generateChecksum(num){
+            var checksum = 0;
+            var numToString = num.toString();
+            for(var i = 0; i < numToString.length; i++){
+                checksum += parseInt(numToString.charAt(i));
+            }
+            return checksum % 10;
+        }
+    </script>
+</body>
+
+</html>

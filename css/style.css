@@ -1,0 +1,212 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    background-color: #49aa5b;
+}
+
+header h1 {
+    margin: 0px;
+    padding: 0px;
+}
+
+#chatBox {
+    background-color: white;
+    text-align: center;
+    height: 20vh;
+    border-radius: 5px;
+    width: 80%;
+    margin: auto;
+    position: relative;
+    margin-top: 10px;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    font-size: 2em;
+    padding: 5px;
+}
+
+#chatBoxData {
+    font-family: 'Manjari', sans-serif;
+    font-weight: 400;
+}
+
+#chatBox::after {
+    border-left: 40px solid transparent;
+    border-top: 20px solid white;
+    bottom: -20px;
+    content: "";
+    position: absolute;
+    right: 80%;
+}
+
+#chatBoxText {
+    margin: 5px;
+    text-align: center;
+    position: relative;
+	top: 50%;
+	left: 50%;
+    transform: translate(-50%, -50%); /*Offet*/
+    height: 20vh;
+}
+
+#chatBoxText h1, h2, h3 {
+    margin: 0;
+}
+
+#kitty {
+    height: 65vh;
+}
+
+input {
+    width: 80%;
+    font-size: 2em;
+    text-align: center;
+    border-radius: 5px;
+}
+
+#userInputs {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#logout {
+    display: inline-block;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    text-decoration: none;
+    background: #ff4138;
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background 250ms ease-in-out, 
+                transform 150ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 3px;
+}
+
+#formSubmitButton {
+    display: inline-block;
+    border: none;
+    margin: 5px;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    background: #7ccbff;
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background 250ms ease-in-out, 
+                transform 150ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 3px;
+}
+
+#logout:hover,
+#logout:focus {
+    background: #ff1104;
+}
+
+#logout:focus {
+    outline: 1px solid #fff;
+    outline-offset: -4px;
+}
+
+#logout:active {
+    transform: scale(0.99);
+}
+
+#logoutDiv{
+    text-align: right;
+    margin-right: 10%;
+    margin-top: 5px;
+}
+
+#charts{
+    width: inherit;
+    margin: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#chartLegend{
+    text-align: center;
+    font-size: 0.7em;
+    position: relative;
+    width: 30%;
+}
+
+@media only screen and (max-width: 1000px) {
+    #charts{
+        flex-direction: column;
+    }
+
+    #chatBoxText {
+        font-size: 1em;
+        top: auto;
+        left: auto;
+        transform: none;
+    }
+
+    #chartLegend{
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    input {
+      font-size: 1em;
+    }
+
+    #chatBoxText {
+        font-size: 0.7em;
+        top: auto;
+        left: auto;
+        transform: none;
+    }
+
+    #logout {
+        font-size: 0.7em;
+    }
+
+    #charts{
+        flex-direction: column;
+    }
+
+    #chartLegend{
+        width: 100%;
+    }
+  }
+
+  @media only screen and (max-width: 533px) {
+    input {
+      font-size: 1em;
+    }
+
+    #chatBoxText {
+        font-size: 0.5em;
+        top: auto;
+        left: auto;
+        transform: none;
+    }
+
+    #logout {
+        font-size: 0.7em;
+    }
+
+    #charts{
+        flex-direction: column;
+    }
+
+    #chartLegend{
+        width: 100%;
+    }
+
+}
